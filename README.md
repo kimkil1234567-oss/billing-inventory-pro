@@ -51,7 +51,7 @@ Add screenshots of:
 
 ## 🌐 Live Demo
 
-https://YOUR_USERNAME.github.io/billing-inventory-pro/
+https://kimkil1234567-oss.github.io/billing-inventory-pro/
 
 ## 💻 Installation
 
