@@ -2141,9 +2141,7 @@
                             <label style="font-size:0.8rem; font-weight:600; color:var(--text-secondary);">Payment Method</label>
                             <select id="paymentMethod" style="width:100%; padding:0.5rem; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--bg-input); color:var(--text-primary);">
                                 <option value="Cash">Cash</option>
-                                <option value="Card">Card</option>
-                                <option value="UPI">UPI</option>
-                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="UPI">Card</option>
                             </select>
                         </div>
                     </div>
@@ -2177,11 +2175,6 @@
                         <div class="cart-actions">
                             <button class="btn btn-success" onclick="generateBill()"><i class="fas fa-file-invoice"></i> Generate Bill</button>
                             <button class="btn btn-secondary" onclick="clearCart()"><i class="fas fa-undo"></i> Clear</button>
-                        </div>
-                        <div class="draft-actions">
-                            <button class="btn btn-outline btn-sm" onclick="saveDraft()"><i class="fas fa-save"></i> Save Draft</button>
-                            <button class="btn btn-outline btn-sm" onclick="loadDraft()"><i class="fas fa-upload"></i> Load Draft</button>
-                            <button class="btn btn-outline btn-sm" onclick="clearDraft()"><i class="fas fa-trash"></i> Clear Draft</button>
                         </div>
                     </div>
                 </div>
