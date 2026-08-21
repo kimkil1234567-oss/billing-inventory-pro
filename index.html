@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-    <title>Billing & Inventory Pro</title>
+    <title>Billing Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
     </script>
@@ -52,6 +52,9 @@
             --status-loading: #F59E0B;
             --toast-bg: #0F172A;
             --toast-text: #ffffff;
+            --txn-settled: #10B981;
+            --txn-pending: #F59E0B;
+            --txn-unpaid: #EF4444;
         }
 
         [data-theme="dark"] {
@@ -90,6 +93,9 @@
             --settings-border: #334155;
             --toast-bg: #1E293B;
             --toast-text: #F1F5F9;
+            --txn-settled: #34D399;
+            --txn-pending: #FBBF24;
+            --txn-unpaid: #F87171;
         }
 
         @media (prefers-color-scheme: dark) {
@@ -129,6 +135,9 @@
                 --settings-border: #334155;
                 --toast-bg: #1E293B;
                 --toast-text: #F1F5F9;
+                --txn-settled: #34D399;
+                --txn-pending: #FBBF24;
+                --txn-unpaid: #F87171;
             }
         }
 
@@ -249,7 +258,6 @@
         .settings-toggle:active {
             transform: scale(0.92);
         }
-
         .settings-toggle:hover {
             background: var(--bg-border);
         }
@@ -1209,6 +1217,121 @@
             background: var(--bg-border);
         }
 
+        /* ===== TRANSACTION LIST (NEW) ===== */
+        .txn-list-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 0.9rem 1rem;
+            margin-bottom: 0.6rem;
+            box-shadow: var(--shadow-sm);
+            transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.2s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .txn-list-item:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .txn-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+        }
+
+        .txn-time {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            min-width: 70px;
+        }
+
+        .txn-customer {
+            font-weight: 600;
+            font-size: 0.9rem;
+            flex: 1;
+            min-width: 80px;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .txn-amount {
+            font-weight: 800;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .txn-meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            margin-top: 0.1rem;
+        }
+
+        .txn-ref {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-family: monospace;
+            background: var(--bg-nav);
+            padding: 0.1rem 0.5rem;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .txn-ref i {
+            font-size: 0.6rem;
+            opacity: 0.6;
+        }
+
+        .txn-status {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 0.15rem 0.6rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .txn-status.settled {
+            background: var(--secondary-light);
+            color: var(--txn-settled);
+        }
+
+        .txn-status.pending {
+            background: var(--amber-light);
+            color: var(--txn-pending);
+        }
+
+        .txn-status.unpaid {
+            background: var(--danger-light);
+            color: var(--txn-unpaid);
+        }
+
+        .txn-status i {
+            font-size: 0.55rem;
+        }
+
+        .txn-divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 0.25rem 0 0.15rem;
+            opacity: 0.5;
+        }
+
         .bill-list-item {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -1256,6 +1379,7 @@
             color: var(--danger);
         }
 
+        /* ── graphs ── */
         .graphs-grid {
             display: flex;
             flex-direction: column;
@@ -1564,7 +1688,10 @@
 
         .daterange-row {
             display: flex;
+            align-items: center;
+            gap: 0.5rem;
             margin-bottom: 0.75rem;
+            flex-wrap: wrap;
         }
 
         .daterange-trigger {
@@ -1581,6 +1708,8 @@
             cursor: pointer;
             box-shadow: var(--shadow-sm);
             transition: border-color 0.2s, background 0.25s ease;
+            flex: 0 1 auto;
+            min-width: 100px;
         }
 
         .daterange-trigger:hover {
@@ -1616,10 +1745,16 @@
         }
 
         .txn-summary-label {
-            font-size: 0.95rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.2rem;
+            letter-spacing: 0.3px;
+        }
+
+        .txn-summary-label .date-range {
             font-weight: 700;
             color: var(--text-primary);
-            margin-bottom: 0.35rem;
         }
 
         .txn-summary-amount {
@@ -1628,7 +1763,7 @@
             color: var(--secondary);
             letter-spacing: -1px;
             line-height: 1.05;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
             font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
         }
 
@@ -1966,7 +2101,6 @@
             width: 20px;
         }
 
-        /* Low stock alert list */
         .low-stock-list {
             margin-top: 0.5rem;
             border-top: 1px solid var(--border);
@@ -1986,7 +2120,6 @@
             font-weight: 700;
         }
 
-        /* Export button */
         .export-btn {
             background: var(--bg-nav);
             border: 1px solid var(--border);
@@ -1996,6 +2129,9 @@
             cursor: pointer;
             color: var(--text-secondary);
             transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
         }
         .export-btn:hover {
             background: var(--bg-hover);
@@ -2011,6 +2147,7 @@
             flex: 1;
         }
 
+        /* ── responsive ── */
         @media (max-width: 480px) {
             .txn-summary-amount {
                 font-size: 2rem;
@@ -2025,6 +2162,20 @@
             .settings-panel {
                 max-width: 100%;
             }
+            .txn-row {
+                flex-wrap: wrap;
+            }
+            .txn-customer {
+                font-size: 0.8rem;
+                min-width: 60px;
+            }
+            .txn-amount {
+                font-size: 0.9rem;
+            }
+            .txn-time {
+                font-size: 0.7rem;
+                min-width: 60px;
+            }
         }
 
         @media (max-width: 360px) {
@@ -2034,6 +2185,9 @@
             }
             .nav-btn i {
                 font-size: 0.75rem;
+            }
+            .txn-ref {
+                font-size: 0.6rem;
             }
         }
 
@@ -2106,7 +2260,7 @@
         <!-- ===== HEADER ===== -->
         <header>
             <div class="header-row">
-                <h1><i class="fas fa-receipt"></i> Billing & Inventory</h1>
+                <h1><i class="fas fa-receipt"></i> Billing Pro</h1>
                 <div class="header-actions">
                     <span class="connection-badge" id="connBadge">
                         <span class="dot offline" id="connDot"></span>
@@ -2141,7 +2295,7 @@
                             <label style="font-size:0.8rem; font-weight:600; color:var(--text-secondary);">Payment Method</label>
                             <select id="paymentMethod" style="width:100%; padding:0.5rem; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--bg-input); color:var(--text-primary);">
                                 <option value="Cash">Cash</option>
-                                <option value="UPI">Card</option>
+                                <option value="UPI">UPI</option>
                             </select>
                         </div>
                     </div>
@@ -2279,16 +2433,12 @@
                 </div>
                 <div id="txnTransactionView">
                     <div class="txn-summary-card">
-                        <div class="txn-summary-label" id="txnSummaryLabel">Today's Collection</div>
+                        <div class="txn-summary-label" id="txnSummaryLabel">
+                            <span id="txnFilterLabel">Today's Collection</span>
+                            <span class="date-range" id="txnDateRangeDisplay"></span>
+                        </div>
                         <div class="txn-summary-amount" id="txnSummaryAmount">₹0</div>
                         <div class="txn-summary-count" id="txnSummaryCount">0 Transactions</div>
-                    </div>
-                    <div class="filter-bar">
-                        <div class="filter-row">
-                            <div class="filter-group" style="flex:2;"><label>Search</label><input type="text" id="billSearchInput" placeholder="Bill # or Customer..." /></div>
-                            <div class="filter-group"><label>Sort</label><select id="billSortSelect"><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="amount_high">Amount: High → Low</option></select></div>
-                        </div>
-                        <div class="filter-actions"><button class="btn-sm-clear" id="resetBillFiltersBtn"><i class="fas fa-undo-alt"></i> Reset</button></div>
                     </div>
                     <div id="billsList"></div>
                 </div>
@@ -2633,6 +2783,113 @@
         // Override apiRequest with loading wrapper (already done above)
 
         // ========================================================================
+        // DATE FORMATTING HELPERS (FIXED parseDateStr)
+        // ========================================================================
+
+        function formatDateShort(date) {
+            if (!date) return '';
+            const d = new Date(date);
+            if (isNaN(d)) return '';
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const year = String(d.getFullYear()).slice(2);
+            return day + '/' + month + '/' + year;
+        }
+
+        function formatDateDisplay(date) {
+            if (!date) return '';
+            const d = new Date(date);
+            if (isNaN(d)) return '';
+            const day = String(d.getDate()).padStart(2, '0');
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const year = String(d.getFullYear()).slice(2);
+            return day + ' ' + months[d.getMonth()] + ' ' + year;
+        }
+
+        function formatDateRangeDisplay(startDate, endDate) {
+            if (!startDate || !endDate) return '';
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            if (isNaN(start) || isNaN(end)) return '';
+            const s = formatDateShort(start);
+            const e = formatDateShort(end);
+            if (s === e) return s;
+            return e + ' - ' + s;
+        }
+
+        function getDateOnly(date) {
+            const d = new Date(date);
+            return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        }
+
+        function toDateStr(date) {
+            const d = new Date(date);
+            return d.getFullYear() + '-' +
+                String(d.getMonth() + 1).padStart(2, '0') + '-' +
+                String(d.getDate()).padStart(2, '0');
+        }
+
+        // ===== FIXED: parseDateStr handles both YYYY-MM-DD and DD-MM-YYYY =====
+        function parseDateStr(dateStr) {
+            if (!dateStr) return null;
+            const parts = dateStr.split('-');
+            if (parts.length !== 3) return null;
+            // If first part is 4 digits, assume YYYY-MM-DD
+            if (parts[0].length === 4) {
+                return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+            } else {
+                // Assume DD-MM-YYYY
+                return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+            }
+        }
+
+        function todayStr() {
+            const d = new Date();
+            return String(d.getDate()).padStart(2, '0') + '-' +
+                String(d.getMonth() + 1).padStart(2, '0') + '-' +
+                d.getFullYear();
+        }
+
+        function timeStr() {
+            const d = new Date();
+            return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+        }
+
+        function getTodayDateStr() {
+            const d = new Date();
+            return d.getFullYear() + '-' +
+                String(d.getMonth() + 1).padStart(2, '0') + '-' +
+                String(d.getDate()).padStart(2, '0');
+        }
+
+        function getMonthStartStr() {
+            const d = new Date();
+            d.setDate(1);
+            return d.getFullYear() + '-' +
+                String(d.getMonth() + 1).padStart(2, '0') + '-' +
+                '01';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function toggleSettings() {
+            const panel = document.getElementById('settingsPanel');
+            const overlay = document.getElementById('settingsOverlay');
+            const isOpen = panel.classList.contains('open');
+            if (isOpen) {
+                panel.classList.remove('open');
+                overlay.classList.remove('active');
+            } else {
+                panel.classList.add('open');
+                overlay.classList.add('active');
+                document.getElementById('apiUrlInput').value = serverConfig.url || '';
+                document.getElementById('apiKeyInput').value = serverConfig.key || '';
+            }
+        }
+
+        // ========================================================================
         // CONNECTION & DATA LOAD
         // ========================================================================
 
@@ -2735,58 +2992,6 @@
             const parts = d.split('-');
             if (parts.length === 3) return parts[0] + '-' + parts[1] + '-' + parts[2];
             return d;
-        }
-
-        function todayStr() {
-            const d = new Date();
-            return String(d.getDate()).padStart(2, '0') + '-' +
-                String(d.getMonth() + 1).padStart(2, '0') + '-' +
-                d.getFullYear();
-        }
-
-        function timeStr() {
-            const d = new Date();
-            return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
-        }
-
-        function parseDateStr(dateStr) {
-            const parts = dateStr.split('-');
-            if (parts.length !== 3) return null;
-            return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
-        }
-
-        function getTodayDateStr() {
-            const d = new Date();
-            return d.getFullYear() + '-' +
-                String(d.getMonth() + 1).padStart(2, '0') + '-' +
-                String(d.getDate()).padStart(2, '0');
-        }
-
-        function getMonthStartStr() {
-            const d = new Date();
-            d.setDate(1);
-            return d.getFullYear() + '-' +
-                String(d.getMonth() + 1).padStart(2, '0') + '-' +
-                '01';
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
-        }
-
-        function toggleSettings() {
-            const panel = document.getElementById('settingsPanel');
-            const overlay = document.getElementById('settingsOverlay');
-            const isOpen = panel.classList.contains('open');
-            if (isOpen) {
-                panel.classList.remove('open');
-                overlay.classList.remove('active');
-            } else {
-                panel.classList.add('open');
-                overlay.classList.add('active');
-                document.getElementById('apiUrlInput').value = serverConfig.url || '';
-                document.getElementById('apiKeyInput').value = serverConfig.key || '';
-            }
         }
 
         // ========================================================================
@@ -3337,7 +3542,6 @@
                 container.innerHTML = '<div class="cart-empty"><i class="fas fa-box-open"></i>Cart is empty</div>';
                 countEl.innerText = '0 items';
                 updateCartTotals();
-                // Auto-save draft
                 saveDraftToLocal();
                 return;
             }
@@ -3429,7 +3633,6 @@
                 if (!raw) { showToast('No draft found', 'info'); return; }
                 const draft = JSON.parse(raw);
                 if (draft.cart && Array.isArray(draft.cart)) {
-                    // Validate cart items still exist
                     const validCart = draft.cart.filter(item => {
                         const prod = data.products.find(p => p.id === item.productId);
                         return prod && prod.qty >= item.qty;
@@ -3458,7 +3661,6 @@
             showToast('Draft cleared', 'info');
         }
 
-        // Auto-load draft on page load if cart empty
         function autoLoadDraft() {
             if (cart.length === 0) {
                 try {
@@ -3568,7 +3770,7 @@
                 items,
                 discount,
                 paymentMethod,
-                paid: false // default unpaid
+                paid: false
             };
 
             try {
@@ -3587,7 +3789,7 @@
         }
 
         // ========================================================================
-        // BILL HISTORY
+        // BILL HISTORY (FIXED date range handling)
         // ========================================================================
 
         let billSearchTerm = "",
@@ -3596,36 +3798,70 @@
 
         function getTxnRangeBounds() {
             const now = new Date();
+            const today = getDateOnly(now);
             const end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
             let start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
-            let label = "Today's Collection";
-            if (txnRange === 'today') { label = "Today's Collection"; } else if (txnRange === 'yesterday') {
-                start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, 0, 0, 0);
+            let filterName = 'Today';
+            let displayLabel = "Today's Collection";
+
+            if (txnRange === 'today') {
+                filterName = 'Today';
+                displayLabel = "Today's Collection";
+            } else if (txnRange === 'yesterday') {
+                const y = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+                start = getDateOnly(y);
                 const e = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, 23, 59, 59);
-                return { start, end: e, label: "Yesterday's Collection" };
-            } else if (txnRange === '7d') { start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6, 0, 0,
-                    0);
-                label = "Last 7 days"; } else if (txnRange === '30d') { start = new Date(now.getFullYear(), now.getMonth(),
-                    now.getDate() - 29, 0, 0, 0);
-                label = "Last 30 days"; } else if (txnRange === '6m') { start = new Date(now.getFullYear(), now.getMonth() -
-                    6, now.getDate(), 0, 0, 0);
-                label = "Last 6 months"; } else if (txnRange === 'all') { return { start: null, end: null,
-                    label: "All Time Collection" }; } else if (txnRange === 'custom') {
+                filterName = 'Yesterday';
+                displayLabel = "Yesterday's Collection";
+                return { start, end: e, filterName, displayLabel };
+            } else if (txnRange === '7d') {
+                const s = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6);
+                start = getDateOnly(s);
+                filterName = 'Last 7 days';
+                displayLabel = "Last 7 days";
+            } else if (txnRange === '30d') {
+                const s = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 29);
+                start = getDateOnly(s);
+                filterName = 'Last 30 days';
+                displayLabel = "Last 30 days";
+            } else if (txnRange === '6m') {
+                const s = new Date(now.getFullYear(), now.getMonth() - 6, now.getDate());
+                start = getDateOnly(s);
+                filterName = 'Last 6 months';
+                displayLabel = "Last 6 months";
+            } else if (txnRange === 'all') {
+                filterName = 'All time';
+                displayLabel = "All Time Collection";
+                return { start: null, end: null, filterName, displayLabel };
+            } else if (txnRange === 'custom') {
                 const f = document.getElementById('txnDateFrom');
                 const t = document.getElementById('txnDateTo');
-                const fv = f && f.value ? new Date(f.value + 'T00:00:00') : null;
-                const tv = t && t.value ? new Date(t.value + 'T23:59:59') : null;
-                return { start: fv, end: tv, label: "Custom Range" };
+                let fv = null,
+                    tv = null;
+                if (f && f.value) {
+                    const parsed = parseDateStr(f.value);
+                    if (parsed) fv = getDateOnly(parsed);
+                }
+                if (t && t.value) {
+                    const parsed = parseDateStr(t.value);
+                    if (parsed) {
+                        tv = new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate(), 23, 59, 59);
+                    }
+                }
+                filterName = 'Custom';
+                displayLabel = "Custom Range";
+                return { start: fv, end: tv, filterName, displayLabel };
             }
-            return { start, end, label };
+            return { start, end, filterName, displayLabel };
         }
 
         function billInRange(bill, start, end) {
             if (!start && !end) return true;
             const d = parseDateStr(bill.date);
             if (!d || isNaN(d)) return false;
-            if (start && d < start) return false;
-            if (end && d > end) return false;
+            const ds = getDateOnly(d);
+            if (start && ds < getDateOnly(start)) return false;
+            if (end && ds > getDateOnly(end)) return false;
             return true;
         }
 
@@ -3640,17 +3876,36 @@
                     b.customerName.toLowerCase().includes(term)
                 );
             }
-            if (billSortType === "newest") filtered.sort((a, b) => b.date.localeCompare(a.date) || (b.time || '').localeCompare(
-                a.time || ''));
-            else if (billSortType === "oldest") filtered.sort((a, b) => a.date.localeCompare(b.date) || (a.time || '')
-                .localeCompare(b.time || ''));
-            else if (billSortType === "amount_high") filtered.sort((a, b) => b.total - a.total);
+
+            // Sort bills properly using Date objects (newest first)
+            if (billSortType === "newest") {
+                filtered.sort((a, b) => {
+                    const dateA = parseDateStr(a.date);
+                    const dateB = parseDateStr(b.date);
+                    if (!dateA || !dateB) return 0;
+                    if (dateB - dateA !== 0) return dateB - dateA;
+                    return (b.time || '').localeCompare(a.time || '');
+                });
+            } else if (billSortType === "oldest") {
+                filtered.sort((a, b) => {
+                    const dateA = parseDateStr(a.date);
+                    const dateB = parseDateStr(b.date);
+                    if (!dateA || !dateB) return 0;
+                    if (dateA - dateB !== 0) return dateA - dateB;
+                    return (a.time || '').localeCompare(b.time || '');
+                });
+            } else if (billSortType === "amount_high") {
+                filtered.sort((a, b) => b.total - a.total);
+            }
             return filtered;
         }
 
         function setTxnRange(range) {
             txnRange = range;
-            document.getElementById('txnCustomRange').style.display = (range === 'custom') ? 'flex' : 'none';
+            const customRange = document.getElementById('txnCustomRange');
+            if (customRange) {
+                customRange.style.display = (range === 'custom') ? 'flex' : 'none';
+            }
             const labels = { today: 'Today', yesterday: 'Yesterday', '7d': 'Last 7 days', '30d': 'Last 30 days',
                 '6m': 'Last 6 months', all: 'All time', custom: 'Custom' };
             const el = document.getElementById('daterangeLabel');
@@ -3686,15 +3941,111 @@
             renderTransactions();
         }
 
+        // ========================================================================
+        // RENDER TRANSACTION SUMMARY
+        // ========================================================================
+
         function renderTxnSummary() {
             if (!data) return;
-            const { start, end, label } = getTxnRangeBounds();
+            const { start, end, filterName, displayLabel } = getTxnRangeBounds();
             const bills = data.bills.filter(b => billInRange(b, start, end));
             const total = bills.reduce((s, b) => s + (b.total || 0), 0);
-            document.getElementById('txnSummaryLabel').innerText = label;
+
+            let dateRangeDisplay = '';
+            if (txnRange === 'today' && start) {
+                dateRangeDisplay = formatDateDisplay(start) + ", Today's collection";
+            } else if (txnRange === 'yesterday' && start) {
+                dateRangeDisplay = formatDateDisplay(start) + ", Yesterday";
+            } else if (start && end) {
+                const startD = getDateOnly(start);
+                const endD = getDateOnly(end);
+                const sStr = formatDateShort(startD);
+                const eStr = formatDateShort(endD);
+                if (sStr === eStr) {
+                    dateRangeDisplay = sStr;
+                } else {
+                    dateRangeDisplay = eStr + ' - ' + sStr;
+                }
+                if (txnRange !== 'custom' && txnRange !== 'all') {
+                    dateRangeDisplay = filterName + ' · ' + dateRangeDisplay;
+                } else if (txnRange === 'custom') {
+                    dateRangeDisplay = 'Custom · ' + dateRangeDisplay;
+                } else if (txnRange === 'all') {
+                    dateRangeDisplay = 'All time';
+                }
+            } else if (txnRange === 'all') {
+                dateRangeDisplay = 'All time';
+            } else if (txnRange === 'custom') {
+                const f = document.getElementById('txnDateFrom');
+                const t = document.getElementById('txnDateTo');
+                const fv = f && f.value ? formatDateShort(parseDateStr(f.value)) : '';
+                const tv = t && t.value ? formatDateShort(parseDateStr(t.value)) : '';
+                if (fv && tv) {
+                    dateRangeDisplay = tv + ' - ' + fv;
+                } else if (fv) {
+                    dateRangeDisplay = fv;
+                } else {
+                    dateRangeDisplay = 'Custom';
+                }
+            }
+
+            const labelEl = document.getElementById('txnSummaryLabel');
+            if (labelEl) {
+                if (txnRange === 'today' && start) {
+                    labelEl.innerHTML = '<span class="date-range">' + formatDateDisplay(start) + '</span>, Today\'s collection';
+                } else if (txnRange === 'yesterday' && start) {
+                    labelEl.innerHTML = '<span class="date-range">' + formatDateDisplay(start) + '</span>, Yesterday';
+                } else if (dateRangeDisplay) {
+                    labelEl.innerHTML = '<span class="date-range">' + dateRangeDisplay + '</span>';
+                } else {
+                    labelEl.innerHTML = displayLabel || 'Transactions';
+                }
+            }
+
             document.getElementById('txnSummaryAmount').innerText = formatCurrency(total);
             document.getElementById('txnSummaryCount').innerText = bills.length + (bills.length === 1 ? ' Transaction' :
                 ' Transactions');
+        }
+
+        // ========================================================================
+        // RENDER TRANSACTIONS (flat list)
+        // ========================================================================
+
+        function renderBills() {
+            if (!data) return;
+            const container = document.getElementById('billsList');
+            const filtered = getFilteredBills();
+            if (!filtered.length) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-receipt"></i><p>No bills yet. Start billing!</p></div>';
+                return;
+            }
+            let html = '';
+            for (const bill of filtered) {
+                const displayTime = bill.time || '—';
+                const customer = escapeHtml(bill.customerName) || 'Unknown';
+                const amount = formatCurrency(bill.total);
+                const paid = bill.paid || false;
+                const statusClass = paid ? 'settled' : 'unpaid';
+                const statusIcon = paid ? 'fa-check-circle' : 'fa-clock';
+                const statusLabel = paid ? 'Settled' : 'Unpaid';
+                const ref = bill.billNumber || 'REF';
+                const paymentMethod = bill.paymentMethod || 'Cash';
+
+                html += '<div class="txn-list-item" onclick="showBillDetail(\'' + bill.id + '\')">' +
+                    '<div class="txn-row">' +
+                    '<span class="txn-time">' + displayTime + '</span>' +
+                    '<span class="txn-customer">' + customer + '</span>' +
+                    '<span class="txn-amount">' + amount + '</span>' +
+                    '</div>' +
+                    '<hr class="txn-divider">' +
+                    '<div class="txn-meta-row">' +
+                    '<span class="txn-ref"><i class="fas fa-qrcode"></i> ' + ref + ' | ' + paymentMethod + '</span>' +
+                    '<span class="txn-status ' + statusClass + '"><i class="fas ' + statusIcon + '"></i> ' + statusLabel +
+                    '</span>' +
+                    '</div>' +
+                    '</div>';
+            }
+            container.innerHTML = html;
         }
 
         function renderTransactions() {
@@ -3706,11 +4057,19 @@
             }
         }
 
+        // ========================================================================
+        // RENDER HISTORY VIEW (grouped by date) — NO FILTER, ALL BILLS
+        // ========================================================================
+
         function renderHistoryView() {
-            if (!data) return;
-            const { start, end, label } = getTxnRangeBounds();
-            const bills = data.bills.filter(b => billInRange(b, start, end));
-            const total = bills.reduce((s, b) => s + (b.total || 0), 0);
+            if (!data) {
+                return;
+            }
+
+            // ===== USE ALL BILLS – NO DATE FILTER =====
+            const bills = data.bills || [];
+
+            // Group by date
             const groups = {};
             for (const b of bills) {
                 if (!groups[b.date]) groups[b.date] = { total: 0, count: 0, bills: [] };
@@ -3718,20 +4077,32 @@
                 groups[b.date].count += 1;
                 groups[b.date].bills.push(b);
             }
-            const dates = Object.keys(groups).sort((a, b) => b.localeCompare(a));
-            document.getElementById('histSummaryLabel').innerText = label;
+
+            // Sort dates newest first
+            const dates = Object.keys(groups).sort((a, b) => {
+                const dateA = parseDateStr(a);
+                const dateB = parseDateStr(b);
+                if (!dateA || !dateB) return 0;
+                return dateB - dateA;
+            });
+
+            const total = bills.reduce((s, b) => s + (b.total || 0), 0);
+
+            // Summary card
+            document.getElementById('histSummaryLabel').innerHTML = '<span class="date-range">All Bills</span>';
             document.getElementById('histSummaryAmount').innerText = formatCurrency(total);
             document.getElementById('histSummaryCount').innerText = bills.length + ' Bills · ' + dates.length + ' Day' + (
                 dates.length === 1 ? '' : 's');
 
             const container = document.getElementById('historyList');
             if (!dates.length) {
-                container.innerHTML = '<div class="empty-state"><i class="fas fa-clock-rotate-left"></i><p>No bills in this range.</p></div>';
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-clock-rotate-left"></i><p>No bills yet.</p></div>';
                 return;
             }
-            const todayStr2 = new Date().toISOString().slice(0, 10);
+
+            const todayStr2 = getTodayDateStr();
             const yestStr2 = (function() { const d = new Date();
-                d.setDate(d.getDate() - 1); return d.toISOString().slice(0, 10); })();
+                d.setDate(d.getDate() - 1); return toDateStr(d); })();
             let html = '';
             for (const d of dates) {
                 const g = groups[d];
@@ -3745,7 +4116,12 @@
                     '</div>' +
                     '<div class="hist-day-sub">' + g.count + ' bill' + (g.count === 1 ? '' : 's') + '</div>' +
                     '<div class="hist-day-bills">';
-                g.bills.sort((a, b) => (b.time || '').localeCompare(a.time || ''));
+                // Sort bills within each day: newest first
+                g.bills.sort((a, b) => {
+                    const tA = a.time || '';
+                    const tB = b.time || '';
+                    return tB.localeCompare(tA);
+                });
                 for (const b of g.bills) {
                     html += '<div class="hist-bill" onclick="showBillDetail(\'' + b.id + '\')">' +
                         '<div class="hb-left"><div class="hb-num">' + escapeHtml(b.billNumber) + '</div>' +
@@ -3757,28 +4133,9 @@
             container.innerHTML = html;
         }
 
-        function renderBills() {
-            if (!data) return;
-            const container = document.getElementById('billsList');
-            const filtered = getFilteredBills();
-            if (!filtered.length) {
-                container.innerHTML = '<div class="empty-state"><i class="fas fa-receipt"></i><p>No bills yet. Start billing!</p></div>';
-                return;
-            }
-            let html = '';
-            for (const bill of filtered) {
-                const displayDate = formatDate(bill.date);
-                const paidStatus = bill.paid ? 'Paid' : 'Unpaid';
-                const statusClass = bill.paid ? 'paid' : 'unpaid';
-                html += '<div class="bill-list-item" onclick="showBillDetail(\'' + bill.id + '\')">' +
-                    '<div class="left"><div class="bill-number">' + escapeHtml(bill.billNumber) + '</div>' +
-                    '<div class="bill-meta">' + escapeHtml(bill.customerName) + ' · ' + bill.items.length + ' items' +
-                    ' <span class="status-badge ' + statusClass + '">' + paidStatus + '</span></div></div>' +
-                    '<div class="right"><div class="amount">' + formatCurrency(bill.total) + '</div>' +
-                    '<div class="date">' + displayDate + '</div></div></div>';
-            }
-            container.innerHTML = html;
-        }
+        // ========================================================================
+        // BILL DETAIL
+        // ========================================================================
 
         function showBillDetail(billId) {
             if (!data) return;
@@ -3813,7 +4170,6 @@
             window._currentBillId = billId;
         }
 
-        // ===== FIXED toggleBillPaid – now sends PATCH to server =====
         async function toggleBillPaid() {
             const billId = window._currentBillId;
             if (!billId || !data) return;
@@ -3823,14 +4179,12 @@
             try {
                 const result = await apiRequest(`/api/bill/${billId}`, 'PATCH', { paid: newPaid });
                 if (result.status === 'success') {
-                    // Update local data
                     const index = data.bills.findIndex(b => b.id === billId);
                     if (index !== -1) {
                         data.bills[index].paid = newPaid;
                     }
                     renderTransactions();
                     showToast(`Payment status updated to ${newPaid ? 'Paid' : 'Unpaid'}`, 'success');
-                    // Refresh detail view
                     showBillDetail(billId);
                 } else {
                     showToast('Failed to update payment status', 'error');
@@ -4036,13 +4390,6 @@
             if (!data) return;
             var products = data.products || [];
             var hasProducts = products.length > 0;
-            var emptyIds = ['totalBuySellEmptyMsg', 'productSellEmptyMsg', 'productQtyEmptyMsg', 'productBuyEmptyMsg',
-                'productProfitEmptyMsg'
-            ];
-            for (var e = 0; e < emptyIds.length; e++) {
-                var el = document.getElementById(emptyIds[e]);
-                if (el) el.style.display = hasProducts ? 'none' : 'block';
-            }
             if (!hasProducts) { destroyMainCharts(); return; }
             var totalBuyValue = 0,
                 totalSellValue = 0,
@@ -4174,10 +4521,8 @@
         // ========================================================================
 
         async function init() {
-            // Theme
             initTheme();
 
-            // Load saved API settings
             const savedUrl = localStorage.getItem('api_url');
             const savedKey = localStorage.getItem('api_key');
             if (savedUrl) {
@@ -4189,7 +4534,6 @@
                 serverConfig.key = savedKey;
             }
 
-            // Try to connect and load data if credentials exist
             if (serverConfig.url && serverConfig.key) {
                 await testConnection();
             } else {
@@ -4197,24 +4541,18 @@
                 showToast('Please configure API settings', 'info');
             }
 
-            // Auto-load draft
             autoLoadDraft();
-
-            // Bind UI events
             bindFilters();
 
-            // Close modals on outside click
             window.addEventListener('click', function(e) {
                 if (e.target.classList.contains('modal')) e.target.classList.remove('active');
             });
 
-            // Set date range default
             document.getElementById('txnDateFrom').value = getMonthStartStr();
             document.getElementById('txnDateTo').value = getTodayDateStr();
             setTxnRange('today');
         }
 
-        // Start
         document.addEventListener('DOMContentLoaded', init);
     </script>
 
